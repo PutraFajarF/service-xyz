@@ -29,6 +29,8 @@ func Run(cfg *config.Config) {
 
 	// Repository
 	consumerRepository := mysql_repository.NewConsumerMysqlRepository(l, cfg, db)
+
+	// Usecase
 	consumerUsecase := consumer.NewConsumerUsecase(l, cfg, consumerRepository)
 
 	// HTTP Server
