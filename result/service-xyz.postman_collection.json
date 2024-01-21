@@ -1,0 +1,48 @@
+{
+	"info": {
+		"_postman_id": "cfe11f37-d1ae-4fa3-a76d-054cdd4d0e3f",
+		"name": "service-xyz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20214265"
+	},
+	"item": [
+		{
+			"name": "Get Consumer By ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Create Consumer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nik\" : \"1234\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"gender\": \"Laki-laki\",\r\n    \"full_name\": \"budiastuti\",\r\n    \"legal_name\": \"budi astuti\",\r\n    \"tempat_lahir\": \"Jakarta\",\r\n    \"tanggal_lahir\": \"01-01-1998\",\r\n    \"gaji\": \"10000000\",\r\n    \"foto_ktp\": \"www.google.com/photo/me.jpg\",\r\n    \"foto_selfie\": \"www.google.com/photo/budi.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/consumer/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"consumer",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
