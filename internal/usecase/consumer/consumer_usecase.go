@@ -68,7 +68,7 @@ func (c *ConsumerUseCase) GetDataConsumerById(id int) (*entity.ConsumerInfo, err
 	result, err := c.cr.GetConsumerById(id)
 	if err != nil {
 		defer c.l.CreateLog(&logger.Log{
-			Event:      commons.USECASE_CONSUMER + "|CREATE",
+			Event:      commons.USECASE_CONSUMER + "|GET",
 			Method:     "GET",
 			StatusCode: http.StatusInternalServerError,
 			Request:    string(jsonReq),
