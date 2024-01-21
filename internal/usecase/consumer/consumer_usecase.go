@@ -35,6 +35,11 @@ func (c *ConsumerUseCase) CreateConsumer(data *entity.ConsumerInfoRequest) error
 	request := map[string]interface{}{"request": data}
 	jsonReq, _ := json.Marshal(request)
 
+	// validation input
+	if data == nil || data.NIK == "" || data.Email == "" {
+		return commons.ErrInvalidPayload
+	}
+
 	Consumer := entity.ConsumerInfo{
 		NIK:          data.NIK,
 		Email:        data.Email,
