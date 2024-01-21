@@ -8,6 +8,7 @@ import (
 	"service-xyz/internal/entity"
 	"service-xyz/internal/repository/mysql"
 	"service-xyz/pkg/logger"
+	"time"
 )
 
 type IConsumerUsecase interface {
@@ -26,10 +27,24 @@ func NewConsumerUsecase(l *logger.Logger, cfg *config.Config, cr mysql.IConsumer
 }
 
 func (c *ConsumerUseCase) CreateConsumer(data *entity.ConsumerInfoRequest) error {
+	var Consumer entity.ConsumerInfo
 	request := map[string]interface{}{"request": data}
 	jsonReq, _ := json.Marshal(request)
 
-	err := c.cr.InsertConsumer(data)
+	Consumer.NIK = data.NIK
+	Consumer.Email = data.Email
+	Consumer.Gender = data.Gender
+	Consumer.FullName = data.FullName
+	Consumer.LegalName = data.LegalName
+	Consumer.TempatLahir = data.TempatLahir
+	Consumer.TanggalLahir = data.TanggalLahir
+	Consumer.Gaji = data.Gaji
+	Consumer.FotoKTP = data.FotoKTP
+	Consumer.FotoSelfie = data.FotoSelfie
+	Consumer.CreatedAt = time.Now()
+	Consumer.UpdatedAt = time.Now()
+
+	err := c.cr.InsertConsumer(&Consumer)
 	if err != nil {
 		defer c.l.CreateLog(&logger.Log{
 			Event:      commons.USECASE_CONSUMER + "|CREATE",

@@ -9,10 +9,11 @@ import (
 	"service-xyz/config"
 	"service-xyz/internal/entity"
 	"service-xyz/pkg/logger"
+	"strconv"
 )
 
 type IConsumerMysqlRepository interface {
-	InsertConsumer(data *entity.ConsumerInfoRequest) error
+	InsertConsumer(data *entity.ConsumerInfo) error
 	GetConsumerById(id int) (*entity.ConsumerInfo, error)
 	// UpdateConsumerById(id int) (*entity.ConsumerInfo, error)
 }
@@ -27,7 +28,7 @@ func NewConsumerMysqlRepository(l *logger.Logger, cfg *config.Config, db *sql.DB
 	return &ConsumerMysqlRepo{l, cfg, db}
 }
 
-func (c *ConsumerMysqlRepo) InsertConsumer(data *entity.ConsumerInfoRequest) error {
+func (c *ConsumerMysqlRepo) InsertConsumer(data *entity.ConsumerInfo) error {
 	jsonReq, _ := json.Marshal(data)
 
 	trx, err := c.db.Begin()
@@ -47,11 +48,11 @@ func (c *ConsumerMysqlRepo) InsertConsumer(data *entity.ConsumerInfoRequest) err
 		foto_ktp,
 		foto_selfie,
 		created_at,
-		updated_at,
+		updated_at
 	)
-	values (AES_ENCRYPT(?,'%[1]s'), AES_ENCRYPT(?,'%[1]s'), ?, ?, ?, ?, ?, ?, AES_ENCRYPT(?,'%[1]s'), ?, ?, ?)`
+	values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-	query = fmt.Sprintf(query, c.cfg.Cipher.CipherMysql)
+	query = fmt.Sprintf(query)
 	stmt, err := trx.Prepare(query)
 
 	if err != nil {
@@ -118,12 +119,12 @@ func (c *ConsumerMysqlRepo) InsertConsumer(data *entity.ConsumerInfoRequest) err
 
 func (c *ConsumerMysqlRepo) GetConsumerById(id int) (*entity.ConsumerInfo, error) {
 	var res entity.ConsumerInfo
-
-	request := map[string]int{"consumerId": id}
+	idString := strconv.Itoa(id)
+	request := map[string]string{"consumerId": idString}
 	jsonReq, _ := json.Marshal(request)
 
-	query := "SELECT '%[2]d', AES_DECRYPT(nik,'%[1]s') nik, AES_DECRYPT(email,'%[1]s') email, gender, full_name, legal_name, tempat_lahir, tanggal_lahir, gaji, AES_DECRYPT(foto_ktp,'%[1]s') foto_ktp, foto_selfie, created_at, updated_at"
-	query = fmt.Sprintf(query, c.cfg.Cipher.CipherMysql, id)
+	query := "SELECT id, nik, email, gender, full_name, legal_name, tempat_lahir, tanggal_lahir, gaji, foto_ktp, foto_selfie, created_at, updated_at FROM consumer_info where id = ?"
+	query = fmt.Sprintf(query)
 	prep, err := c.db.Prepare(query)
 
 	if err != nil {
@@ -141,7 +142,7 @@ func (c *ConsumerMysqlRepo) GetConsumerById(id int) (*entity.ConsumerInfo, error
 
 	defer prep.Close()
 
-	row := c.db.QueryRow(query, id)
+	row := c.db.QueryRow(query, idString)
 
 	if err := row.Scan(
 		&res.Id,

@@ -17,7 +17,7 @@ func (c *ConsumerRoutes) CreateConsumer(w http.ResponseWriter, r *http.Request) 
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&payload); err != nil {
-		http_resp.HttpErrorResponse(w, false, http.StatusBadRequest, "400", commons.ErrInvalidPayload.Error())
+		http_resp.HttpErrorResponse(w, false, http.StatusBadRequest, "400", err.Error())
 		return
 	}
 
@@ -36,7 +36,7 @@ func (c *ConsumerRoutes) CreateConsumer(w http.ResponseWriter, r *http.Request) 
 		Message:    "Success create consumer",
 	}, logger.LVL_INFO)
 
-	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.HTTP_CONSUMER+"Success", nil)
+	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.HTTP_CONSUMER+" Create Success", nil)
 }
 
 func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +47,7 @@ func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request)
 		defer c.l.CreateLog(&logger.Log{
 			Event:      commons.HTTP_CONSUMER + "|get Consumer",
 			Method:     "GET",
-			StatusCode: http.StatusOK,
+			StatusCode: http.StatusBadRequest,
 			Request:    "consumer_id: " + consumerId,
 			Response:   err,
 			Message:    "Fail get consumer",
@@ -61,7 +61,7 @@ func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request)
 		defer c.l.CreateLog(&logger.Log{
 			Event:      commons.HTTP_CONSUMER + "|get Consumer",
 			Method:     "GET",
-			StatusCode: http.StatusOK,
+			StatusCode: http.StatusInternalServerError,
 			Request:    "consumer_id: " + consumerId,
 			Response:   err,
 			Message:    "Fail get consumer",
@@ -79,5 +79,5 @@ func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request)
 		Message:    "Success get consumer",
 	}, logger.LVL_INFO)
 
-	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.HTTP_CONSUMER+"Success", res)
+	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.HTTP_CONSUMER+" Get Success", res)
 }

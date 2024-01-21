@@ -9,7 +9,7 @@ import (
 func DynamicDir() string {
 	_, b, _, _ := runtime.Caller(0)
 	bStr := filepath.Dir(b)
-	baseDir := strings.Replace(bStr, "/commons", "", -1)
+	baseDir := strings.Replace(bStr, "", "", -1)
 
 	return baseDir
 }

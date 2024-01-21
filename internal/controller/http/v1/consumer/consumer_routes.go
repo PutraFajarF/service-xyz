@@ -18,9 +18,9 @@ type ConsumerRoutes struct {
 func NewConsumerRoutes(r *mux.Router, l *logger.Logger, cfg *config.Config, cu consumer.IConsumerUsecase) {
 	c := &ConsumerRoutes{l, cfg, cu}
 
-	group := r.PathPrefix("v1/consumer").Subrouter()
+	group := r.PathPrefix("/v1/consumer").Subrouter()
 	group.HandleFunc("/create", c.CreateConsumer).Methods(http.MethodPost)
-	group.HandleFunc("/get", c.GetConsumerById).Methods(http.MethodGet)
+	group.HandleFunc("/get/{consumer_id}", c.GetConsumerById).Methods(http.MethodGet)
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("OK Service Running.."))

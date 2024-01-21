@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"service-xyz/commons"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
@@ -56,7 +55,7 @@ type (
 		MaxOpenConns      int    `env-required:"true" yaml:"mysql_max_open_conns"`
 		MaxIdleConns      int    `env-required:"true" yaml:"mysql_max_idle_conns"`
 		MaxLifetimeConns  int    `env-required:"true" yaml:"mysql_max_lifetime_conns"`
-		LifetimeConnsUnit string `env-required:"true" yaml:"mysql_lifetime_conns_unit"`
+		LifetimeConnsUnit string `yaml:"mysql_lifetime_conns_unit"`
 		URL               string `env-required:"true" yaml:"mysql_url" env:"MYSQL_URL"`
 	}
 
@@ -67,8 +66,8 @@ type (
 
 func NewConfig() (*Config, error) {
 	cfg := &Config{}
-	baseDir := commons.DynamicDir()
-	err := cleanenv.ReadConfig(baseDir+"/config/config.yml", cfg)
+	baseDir := ""
+	err := cleanenv.ReadConfig(baseDir+"./config/config.yml", cfg)
 	if err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
 	}
