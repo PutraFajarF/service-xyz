@@ -7,7 +7,7 @@ type Loan struct {
 	ConsumerId     int       `json:"consumer_id,omitempty"`
 	Amount         int       `json:"amount,omitempty"`
 	TotalLoan      int       `json:"total_loan,omitempty"`
-	LoanInterest   float64   `json:"load_interest,omitempty"`
+	LoanInterest   float64   `json:"loan_interest,omitempty"`
 	MonthlyPayment int       `json:"monthly_payment,omitempty"`
 	Status         string    `json:"status,omitempty"`
 	CreatedAt      time.Time `json:"created_at,omitempty"`
