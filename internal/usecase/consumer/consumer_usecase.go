@@ -8,6 +8,7 @@ import (
 	"service-xyz/internal/entity"
 	"service-xyz/internal/repository/mysql"
 	"service-xyz/pkg/logger"
+	"sync"
 	"time"
 )
 
@@ -27,34 +28,55 @@ func NewConsumerUsecase(l *logger.Logger, cfg *config.Config, cr mysql.IConsumer
 }
 
 func (c *ConsumerUseCase) CreateConsumer(data *entity.ConsumerInfoRequest) error {
-	var Consumer entity.ConsumerInfo
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	var errCh error
+
 	request := map[string]interface{}{"request": data}
 	jsonReq, _ := json.Marshal(request)
 
-	Consumer.NIK = data.NIK
-	Consumer.Email = data.Email
-	Consumer.Gender = data.Gender
-	Consumer.FullName = data.FullName
-	Consumer.LegalName = data.LegalName
-	Consumer.TempatLahir = data.TempatLahir
-	Consumer.TanggalLahir = data.TanggalLahir
-	Consumer.Gaji = data.Gaji
-	Consumer.FotoKTP = data.FotoKTP
-	Consumer.FotoSelfie = data.FotoSelfie
-	Consumer.CreatedAt = time.Now()
-	Consumer.UpdatedAt = time.Now()
+	Consumer := entity.ConsumerInfo{
+		NIK:          data.NIK,
+		Email:        data.Email,
+		Gender:       data.Gender,
+		FullName:     data.FullName,
+		LegalName:    data.LegalName,
+		TempatLahir:  data.TempatLahir,
+		TanggalLahir: data.TanggalLahir,
+		Gaji:         data.Gaji,
+		FotoKTP:      data.FotoKTP,
+		FotoSelfie:   data.FotoSelfie,
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+	}
 
-	err := c.cr.InsertConsumer(&Consumer)
-	if err != nil {
-		defer c.l.CreateLog(&logger.Log{
-			Event:      commons.USECASE_CONSUMER + "|CREATE",
-			Method:     "POST",
-			StatusCode: http.StatusInternalServerError,
-			Request:    string(jsonReq),
-			Query:      "",
-			Response:   err,
-			Message:    commons.ErrUsecaseConsumer,
-		}, logger.LVL_ERROR)
+	// Gunakan Mutex sebelum memanggil InsertConsumer untuk hindari race condition
+	mu.Lock()
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		// Memanggil InsertConsumer di dalam goroutine
+		err := c.cr.InsertConsumer(&Consumer)
+		if err != nil {
+			errCh = err
+
+			defer c.l.CreateLog(&logger.Log{
+				Event:      commons.USECASE_CONSUMER + "|CREATE",
+				Method:     "POST",
+				StatusCode: http.StatusInternalServerError,
+				Request:    string(jsonReq),
+				Query:      "",
+				Response:   err,
+				Message:    commons.ErrUsecaseConsumer,
+			}, logger.LVL_ERROR)
+		}
+	}()
+	mu.Unlock()
+
+	// Wait goroutine selesai
+	wg.Wait()
+
+	if errCh != nil {
 		return commons.ErrUsecaseConsumer
 	}
 

@@ -4,7 +4,11 @@ import "errors"
 
 var (
 	// HTTP
-	HTTP_CONSUMER = "HTTP|CONSUMER"
+	HTTP_CONSUMER           = "HTTP|CONSUMER"
+	SUCCESS_CREATE_CONSUMER = "Success Create Consumer"
+	FAIL_CREATE_CONSUMER    = "Fail Create Consumer"
+	SUCCESS_GET_CONSUMER    = "Success Get Consumer"
+	FAIL_GET_CONSUMER       = "Fail Get Consumer"
 
 	// USECASE CONSUMER
 	USECASE_CONSUMER = "USECASE|CONSUMER"

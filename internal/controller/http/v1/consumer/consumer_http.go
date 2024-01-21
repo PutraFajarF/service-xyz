@@ -23,7 +23,7 @@ func (c *ConsumerRoutes) CreateConsumer(w http.ResponseWriter, r *http.Request) 
 
 	err := c.cu.CreateConsumer(&payload)
 	if err != nil {
-		http_resp.HttpErrorResponse(w, false, http.StatusInternalServerError, "500", commons.ErrInternalServer.Error())
+		http_resp.HttpErrorResponse(w, false, http.StatusInternalServerError, "500", err.Error())
 		return
 	}
 
@@ -33,10 +33,10 @@ func (c *ConsumerRoutes) CreateConsumer(w http.ResponseWriter, r *http.Request) 
 		StatusCode: http.StatusOK,
 		Request:    payload,
 		Response:   "Success",
-		Message:    "Success create consumer",
+		Message:    commons.SUCCESS_CREATE_CONSUMER,
 	}, logger.LVL_INFO)
 
-	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.HTTP_CONSUMER+" Create Success", nil)
+	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.SUCCESS_CREATE_CONSUMER, nil)
 }
 
 func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request)
 			StatusCode: http.StatusBadRequest,
 			Request:    "consumer_id: " + consumerId,
 			Response:   err,
-			Message:    "Fail get consumer",
+			Message:    commons.FAIL_GET_CONSUMER,
 		}, logger.LVL_ERROR)
 		http_resp.HttpErrorResponse(w, false, http.StatusBadRequest, "400", err.Error())
 		return
@@ -64,7 +64,7 @@ func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request)
 			StatusCode: http.StatusInternalServerError,
 			Request:    "consumer_id: " + consumerId,
 			Response:   err,
-			Message:    "Fail get consumer",
+			Message:    commons.FAIL_GET_CONSUMER,
 		}, logger.LVL_ERROR)
 		http_resp.HttpErrorResponse(w, false, http.StatusInternalServerError, "500", err.Error())
 		return
@@ -76,8 +76,8 @@ func (c *ConsumerRoutes) GetConsumerById(w http.ResponseWriter, r *http.Request)
 		StatusCode: http.StatusOK,
 		Request:    consumerId,
 		Response:   "Success",
-		Message:    "Success get consumer",
+		Message:    commons.SUCCESS_GET_CONSUMER,
 	}, logger.LVL_INFO)
 
-	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.HTTP_CONSUMER+" Get Success", res)
+	http_resp.HttpSuccessResponse(w, true, http.StatusOK, "200", commons.SUCCESS_GET_CONSUMER, res)
 }
