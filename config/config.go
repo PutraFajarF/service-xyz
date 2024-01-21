@@ -15,6 +15,7 @@ type (
 		HTTPClient `yaml:"httpclient"`
 		MYSQL      `yaml:"mysql"`
 		Log        `yaml:"logger"`
+		Cipher     `yaml:"cipher"`
 	}
 
 	// App -.
@@ -57,6 +58,10 @@ type (
 		MaxLifetimeConns  int    `env-required:"true" yaml:"mysql_max_lifetime_conns"`
 		LifetimeConnsUnit string `env-required:"true" yaml:"mysql_lifetime_conns_unit"`
 		URL               string `env-required:"true" yaml:"mysql_url" env:"MYSQL_URL"`
+	}
+
+	Cipher struct {
+		CipherMysql string `env-required:"true" yaml:"cipher_mysql"`
 	}
 )
 

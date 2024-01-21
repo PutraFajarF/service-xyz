@@ -21,6 +21,7 @@ type Log struct {
 	Method       string
 	Response     interface{} `json:"response"`
 	Key          string      `json:"key,omitempty"`
+	Query        string      `json:"query,omitempty"`
 	Request      interface{} `json:"request"`
 	Message      interface{} `json:"message"`
 }
@@ -63,6 +64,7 @@ func (l *Logger) CreateLog(data *Log, types string) error {
 			"method":        data.Method,
 			"response":      data.Response,
 			"key":           data.Key,
+			"query":         data.Query,
 			"request":       data.Request,
 		}).Warn(data.Message)
 	}
@@ -75,6 +77,7 @@ func (l *Logger) CreateLog(data *Log, types string) error {
 			"method":        data.Method,
 			"response":      data.Response,
 			"key":           data.Key,
+			"query":         data.Query,
 			"request":       data.Request,
 		}).Info(data.Message)
 	}
@@ -87,6 +90,7 @@ func (l *Logger) CreateLog(data *Log, types string) error {
 			"method":        data.Method,
 			"response":      data.Response,
 			"key":           data.Key,
+			"query":         data.Query,
 			"request":       data.Request,
 		}).Error(data.Message)
 	}
